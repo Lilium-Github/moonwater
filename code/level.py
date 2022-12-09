@@ -1,6 +1,7 @@
 import pygame
 from settings import * 
 from player import Player
+from fireball import Fireball
 from overlay import Overlay
 from sprites import Generic
 
@@ -21,6 +22,7 @@ class Level:
         )
 
         self.player = Player((640,360), self.all_sprites)
+        self.player.fireball = Fireball((640,360), self.all_sprites, self.player)
         self.overlay = Overlay(self.player)
 
     def run(self, dt):
@@ -38,13 +40,12 @@ class CamGroup(pygame.sprite.Group):
         self.offset = pygame.math.Vector2()
 
     def custom_draw(self, player):
-
-
         self.offset.x = player.rect.centerx - SCREEN_WIDTH / 2
         self.offset.y = player.rect.centery - SCREEN_HEIGHT / 2
         for layer in LAYERS.values():    
             for sprite in self.sprites():
-                if sprite.z == layer and layer != 0: 
-                    offset_rect = sprite.rect.copy()
-                    offset_rect.center -= self.offset
-                    self.display_surface.blit(sprite.image, offset_rect)
+                if sprite.z == layer: 
+                    if layer != LAYERS["fireball"] or sprite.timers["active"].active:
+                        offset_rect = sprite.rect.copy()
+                        offset_rect.center -= self.offset
+                        self.display_surface.blit(sprite.image, offset_rect)

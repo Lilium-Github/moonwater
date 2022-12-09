@@ -24,6 +24,7 @@ class Player(pygame.sprite.Sprite): #this is a child class of pygame's sprite cl
         self.direction = pygame.math.Vector2() # a vector, in python, is like a more mathy list
         self.pos = pygame.math.Vector2(self.rect.center)
         self.speed = 200
+        self.walking = False
 
         #timers
         self.timers = {
@@ -43,12 +44,10 @@ class Player(pygame.sprite.Sprite): #this is a child class of pygame's sprite cl
         self.seed_index = 0
         self.selected_seed = self.seeds[self.seed_index]
 
-        self.fire = False
-
     def use_tool(self):
+        print("tool_use")
         if self.selected_tool == "fireball":
-            self.fire = Fireball(self.pos, self.group)
-            self.fire.shoot(self)
+            self.fireball.shoot()
 
     def use_seed(self):
         #print(self.selected_seed)
@@ -104,17 +103,23 @@ class Player(pygame.sprite.Sprite): #this is a child class of pygame's sprite cl
         if not self.timers['tool use'].active or self.timers['seed use'].active:
 
             if keys[pygame.K_UP]:
+                self.walking = True
                 self.direction.y = -1
                 self.status = "up"
             elif keys[pygame.K_DOWN]:
+                self.walking = True
                 self.direction.y = 1
                 self.status = "down"
-            else: self.direction.y = 0
+            else: 
+                self.direction.y = 0
+                self.walking = False
 
             if keys[pygame.K_LEFT]:
+                self.walking = True
                 self.direction.x = -1
                 self.status = "left"
             elif keys[pygame.K_RIGHT]:
+                self.walking = True
                 self.direction.x = 1
                 self.status = "right"
             else: self.direction.x = 0
@@ -134,10 +139,11 @@ class Player(pygame.sprite.Sprite): #this is a child class of pygame's sprite cl
             
 
     def move(self, dt):
-        if self.direction.magnitude() > 0:
-            self.direction = self.direction.normalize()
-        self.pos += self.direction * self.speed * dt
-        self.rect.center = self.pos
+        if self.walking:
+            if self.direction.magnitude() > 0:
+                self.direction = self.direction.normalize()
+            self.pos += self.direction * self.speed * dt
+            self.rect.center = self.pos
 
     def update(self, dt):
         self.playerInput()
@@ -146,6 +152,5 @@ class Player(pygame.sprite.Sprite): #this is a child class of pygame's sprite cl
         self.animate(dt)
         self.update_timers()
 
-        if self.fire:
-            self.fire.update(dt)
+        #self.fireball.update(dt)
 
