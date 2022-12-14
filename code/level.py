@@ -2,6 +2,7 @@ import pygame
 from settings import * 
 from player import Player
 from fireball import Fireball
+from water import Water
 from overlay import Overlay
 from sprites import Generic
 
@@ -32,6 +33,14 @@ class Level:
         self.player.fireball = Fireball((640,360), self.all_sprites, self.player)
         self.overlay = Overlay(self.player)
 
+        #set up water tiles
+        tiles = []
+        for i in range(16):
+            for j in range(16):
+                newTile = Water((i * 200, j * 200), self.all_sprites)
+                tiles.append(newTile)
+
+
 
     def run(self, dt):
         #print("run, forrest, run!")
@@ -57,3 +66,4 @@ class CamGroup(pygame.sprite.Group):
                         offset_rect = sprite.rect.copy()
                         offset_rect.center -= self.offset
                         self.display_surface.blit(sprite.image, offset_rect)
+            
