@@ -7,6 +7,7 @@ from level import Level
 class Game:
     def __init__(self):
         pygame.init()
+        pygame.mixer.init()
         self.screen = pygame.display.set_mode((1280,720))
         self.clock = pygame.time.Clock()
         self.level = Level()

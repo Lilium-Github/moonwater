@@ -1,3 +1,5 @@
+import pygame
+
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
 
@@ -21,3 +23,4 @@ LAYERS = {
     "fruit": 10,
     "rain drops": 11
 }
+

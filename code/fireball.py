@@ -19,9 +19,9 @@ class Fireball(pygame.sprite.Sprite): #this is a child class of pygame's sprite 
         self.z = LAYERS["fireball"]
       
         self.timers = {
-            "shoot": Timer(500, self.explode),
-            "explode": Timer(300, self.reset),
-            "active": Timer(800)
+            "shoot": Timer(800, self.explode),
+            "explode": Timer(600, self.reset),
+            "active": Timer(1400)
         }
 
         self.direction = pygame.math.Vector2()
@@ -37,10 +37,14 @@ class Fireball(pygame.sprite.Sprite): #this is a child class of pygame's sprite 
             self.animations[animation] = import_folder(full_path)
 
     def animate(self,dt):
-        self.frame_index += 5*dt
+        self.frame_index += 8*dt
 
         if self.frame_index >= len(self.animations[self.status]):
-            self.frame_index = 0
+            if self.status != 'explode':
+                self.frame_index = 0
+            else:
+                self.frame_index = len(self.animations[self.status])
+
 
         self.image = self.animations[self.status][int(self.frame_index)]
 
@@ -53,7 +57,7 @@ class Fireball(pygame.sprite.Sprite): #this is a child class of pygame's sprite 
     def shoot(self):
         self.pos.x = self.player.pos.x
         self.pos.y = self.player.pos.y
-        print("foo")
+
         self.timers["active"].activate()
         self.timers["shoot"].activate()
         
@@ -72,14 +76,19 @@ class Fireball(pygame.sprite.Sprite): #this is a child class of pygame's sprite 
         self.direction.x = 0
         self.direction.y = 0
 
-        print(self.pos)
-        print(self.player.pos)
+        self.status = 'explode'
+        self.frame_index = 0
+
+        pygame.mixer.Sound.play(self.player.sounds["explode"])
 
         self.timers["explode"].activate()
 
     def reset(self):
         self.pos.x = self.player.pos.x
         self.pos.y = self.player.pos.y
+
+        self.status = 'base'
+        self.frame_index = 0
 
     def update_timers(self):
         for timer in self.timers.values():

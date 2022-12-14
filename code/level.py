@@ -21,9 +21,17 @@ class Level:
             z = LAYERS["ground"]
         )
 
-        self.player = Player((640,360), self.all_sprites)
+        self.sounds = {
+            "explode": pygame.mixer.Sound('moonwater/sounds/explode.wav'),
+            "menu": pygame.mixer.Sound('moonwater/sounds/menu.wav'),
+            "shoot": pygame.mixer.Sound('moonwater/sounds/shoot.wav'),
+            "axe": pygame.mixer.Sound('moonwater/sounds/axe.wav')
+        }
+
+        self.player = Player((640,360), self.sounds, self.all_sprites)
         self.player.fireball = Fireball((640,360), self.all_sprites, self.player)
         self.overlay = Overlay(self.player)
+
 
     def run(self, dt):
         #print("run, forrest, run!")
